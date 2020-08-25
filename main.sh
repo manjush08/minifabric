@@ -33,6 +33,8 @@ case $optkey in
     BLOCK_NUMBER="$2";shift;shift;;
   -c|--channel-name)
     CHANNEL_NAME="$2";shift;shift;;
+  -k|--chaincode-package)
+    CC_PACKAGE="$2";shift;shift;;
   -s|--database-type)
     DB_TYPE="$2";shift;shift;;
   -l|--chaincode-language)
@@ -79,6 +81,7 @@ echo "    CHAINCODE_INIT_REQUIRED=$CC_INIT_REQUIRED"
 echo "    CHAINCODE_PARAMETERS=$(echo $CC_PARAMETERS|base64 -d)"
 echo "    CHAINCODE_PRIVATE=$CC_PRIVATE"
 echo "    CHAINCODE_POLICY=$(echo $CC_POLICY|base64 -d)"
+echo "    CHAINCODE_PACKAGE=$CC_PACKAGE"
 echo "    TRANSIENT_DATA=$(echo $TRANSIENT_DATA|base64 -d)"
 echo "    BLOCK_NUMBER=$BLOCK_NUMBER"
 echo "    EXPOSE_ENDPOINTS=$EXPOSE_ENDPOINTS"

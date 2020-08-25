@@ -2,25 +2,36 @@
 # Script to install chaincode onto a peer node
 {% include "envsetting.j2" %}
 {% if CC_LANGUAGE == 'go' %}
-{% if fabric.goproxy is defined %}
-  go env -w GOPROXY={{ fabric.goproxy }}
-{% endif %}
-cd /opt/gopath/src/github.com/chaincode/{{ CC_NAME }}
-if [ -f 'go/go.mod' ] && [ ! -d 'go/vendor' ]; then
-  cd go
-  export GO111MODULE=on
-{% if fabric.release is version('1.4.3','<=') and fabric.release != '1.4' %}
-  export GOCACHE=on
-{% endif %}
-  go mod vendor
-  cd -
-fi
-peer chaincode install --tls -l golang -v {{ CC_VERSION }} -n {{ CC_NAME }} \
-  -p github.com/chaincode/{{ CC_NAME }}/go
+  {% if fabric.goproxy is defined %}
+    go env -w GOPROXY={{ fabric.goproxy }}
+  {% endif %}
+  cd /opt/gopath/src/github.com/chaincode/{{ CC_NAME }}
+  if [ -f 'go/go.mod' ] && [ ! -d 'go/vendor' ]; then
+    cd go
+    export GO111MODULE=on
+  {% if fabric.release is version('1.4.3','<=') and fabric.release != '1.4' %}
+    export GOCACHE=on
+  {% endif %}
+    go mod vendor
+    cd -
+  fi
+  peer chaincode install --tls -l golang -v {{ CC_VERSION }} -n {{ CC_NAME }} \
+    -p github.com/chaincode/{{ CC_NAME }}/go
 {% elif CC_LANGUAGE == 'node' %}
-peer chaincode install --tls -l node -v {{ CC_VERSION }} -n {{ CC_NAME }} \
-  -p /opt/gopath/src/github.com/chaincode/{{ CC_NAME }}/node
+  {% if CC_PACKAGE == 'false' %}
+    peer chaincode install --tls -l node -v {{ CC_VERSION }} -n {{ CC_NAME }} \
+    -p /opt/gopath/src/github.com/chaincode/{{ CC_NAME }}/node
+  {% else %}
+    {% if CC_PACKAGE == 'package' and CURRENT_ORG == actingpeer.org and actingpeer.name == 'peer1' %}
+      peer chaincode package --tls -l node -v {{ CC_VERSION }} -n {{ CC_NAME }} \
+      -p /opt/gopath/src/github.com/chaincode/milesblock/node/ \
+      -s /opt/gopath/src/github.com/chaincode/milesblock/{{ CC_NAME }}_ccpack.out
+      peer chaincode install /opt/gopath/src/github.com/chaincode/{{ CC_NAME }}/{{ CC_NAME }}_ccpack.out
+    {% else %}
+      peer chaincode install /opt/gopath/src/github.com/chaincode/{{ CC_NAME }}/{{ CC_NAME }}_ccpack.out
+    {% endif %}
+  {% endif %}
 {% elif CC_LANGUAGE == 'java' %}
-peer chaincode install --tls -l java -v {{ CC_VERSION }} -n {{ CC_NAME }} \
-  -p /opt/gopath/src/github.com/chaincode/{{ CC_NAME }}/java
+  peer chaincode install --tls -l java -v {{ CC_VERSION }} -n {{ CC_NAME }} \
+    -p /opt/gopath/src/github.com/chaincode/{{ CC_NAME }}/java
 {% endif %}

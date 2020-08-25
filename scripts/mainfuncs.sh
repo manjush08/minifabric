@@ -70,6 +70,7 @@ function printHelp() {
   echo "    -o|--organization         - organization to be used for org specific operations"
   echo "    -y|--chaincode-policy     - chaincode policy"
   echo "    -d|--init-required        - chaincode initialization flag, default is true"
+  echo "    -k|--chaincode-package    - chaincode package flag: false (default), package or install"
   echo "    -h|--help                 - print this message"
   echo
 }
@@ -77,7 +78,7 @@ function printHelp() {
 function doDefaults() {
   declare -a params=("CHANNEL_NAME" "CC_LANGUAGE" "IMAGETAG" "BLOCK_NUMBER" "CC_VERSION" \
     "CC_NAME" "DB_TYPE" "CC_PARAMETERS" "EXPOSE_ENDPOINTS" "CURRENT_ORG" "TRANSIENT_DATA" \
-    "CC_PRIVATE" "CC_POLICY" "CC_INIT_REQUIRED")
+    "CC_PRIVATE" "CC_POLICY" "CC_INIT_REQUIRED" "CC_PACKAGE")
   if [ ! -f "./vars/envsettings" ]; then
     cp envsettings vars/envsettings
   fi
@@ -102,7 +103,7 @@ function doOp() {
   -e "CC_PARAMETERS=$CC_PARAMETERS"  -e "EXPOSE_ENDPOINTS=$EXPOSE_ENDPOINTS"          \
   -e "ADDRS=$ADDRS" -e "CURRENT_ORG=$CURRENT_ORG" -e "BLOCK_NUMBER=$BLOCK_NUMBER"     \
   -e "TRANSIENT_DATA=$TRANSIENT_DATA" -e "CC_PRIVATE=$CC_PRIVATE"                     \
-  -e "CC_POLICY=$CC_POLICY" -e "CC_INIT_REQUIRED=$CC_INIT_REQUIRED" fabops.yaml
+  -e "CC_POLICY=$CC_POLICY" -e "CC_PACKAGE=$CC_PACKAGE" -e "CC_INIT_REQUIRED=$CC_INIT_REQUIRED" fabops.yaml
 }
 
 funcparams='optionverify'
