@@ -134,7 +134,7 @@
 
   - name: Set explorer port
     set_fact:
-      explorer_port: "{{ nodeport|int + 1 }}"
+      explorer_port: "4000"
 
   - name: Produce the node env file
     copy:
